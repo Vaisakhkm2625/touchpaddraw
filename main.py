@@ -6,8 +6,24 @@ import os
 import time
 
 from evdev import InputDevice
+ 
+import argparse
+ 
+ 
+# Initialize parser
+parser = argparse.ArgumentParser()
+ 
+# Adding optional argument
+parser.add_argument("-d", "--device", help = "device (event*)")
+ 
+# Read arguments from command line
+args = parser.parse_args()
+
 #SET THIS TO YOUR DEVICE
-device = InputDevice('/dev/input/event6')
+if args.device:
+    device = InputDevice('/dev/input/event6')
+
+device = InputDevice('/dev/input/'+ args.device if args.device else 'event7')
 
 # width =  80
 # height =  30
