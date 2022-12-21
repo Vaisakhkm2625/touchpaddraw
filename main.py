@@ -71,14 +71,17 @@ def draw(mat):
 #         # mat[mapFromTo(y,0,804,0,height-1)][mapFromTo(x,0,1224,0,width-1)] = '#'
 #         draw(mat)
 
-def main(stdsrc):
-    stdsrc.clear()
+def main(stdscr):
 
+    stdscr.clear()
     for event in device.read_loop():
+        rows, cols = stdscr.getmaxyx()
         get_xy_coords(event)
+
         if event.code == 54:
-            stdsrc.addstr(math.floor(mapFromTo(y,0,804,0,height-1)),math.floor(mapFromTo(x,0,1224,0,width-1)),"*")
-            stdsrc.refresh()
+            # stdscr.addstr(math.floor(mapFromTo(y,0,804,0,height-1)),math.floor(mapFromTo(x,0,1224,0,width-1)),"*")
+            stdscr.addstr(math.floor(mapFromTo(y,0,804,0,rows-1)),math.floor(mapFromTo(x,0,1224,0,cols-1)),"*")
+            stdscr.refresh()
 
 wrapper(main)
 
