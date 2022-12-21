@@ -1,4 +1,6 @@
 # ref: https://askubuntu.com/questions/1345561/how-can-i-get-absolute-touchpad-coordinates
+#1224 804 -> 15 20
+import math
 
 from evdev import InputDevice
 #SET THIS TO YOUR DEVICE
@@ -17,7 +19,13 @@ def get_xy_coords(e):
         global y
         y = e.value
         
+def mapFromTo(x,a,b,c,d):
+   y=(x-a)/(b-a)*(d-c)+c
+   return y
 
 for event in device.read_loop():
     get_xy_coords(event)
-    print(x, "  ",y)
+    print(math.floor(mapFromTo(x,0,1224,0,15)), "  ",math.floor(mapFromTo(y,0,804,0,20)))
+
+
+
