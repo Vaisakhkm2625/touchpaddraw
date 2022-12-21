@@ -5,6 +5,9 @@ import math
 import os
 import time
 
+import curses
+from curses import wrapper
+
 from evdev import InputDevice
  
 import argparse
@@ -59,10 +62,23 @@ def draw(mat):
         print()
     # time.sleep(20)
 
-for event in device.read_loop():
-    get_xy_coords(event)
 
-    if event.code == 54:
-        mat[math.floor(mapFromTo(y,0,804,0,height-1))][math.floor(mapFromTo(x,0,1224,0,width-1))] = '#'
-        # mat[mapFromTo(y,0,804,0,height-1)][mapFromTo(x,0,1224,0,width-1)] = '#'
-        draw(mat)
+# for event in device.read_loop():
+#     get_xy_coords(event)
+
+#     if event.code == 54:
+#         mat[math.floor(mapFromTo(y,0,804,0,height-1))][math.floor(mapFromTo(x,0,1224,0,width-1))] = '#'
+#         # mat[mapFromTo(y,0,804,0,height-1)][mapFromTo(x,0,1224,0,width-1)] = '#'
+#         draw(mat)
+
+def main(stdsrc):
+    stdsrc.clear()
+
+    for event in device.read_loop():
+        get_xy_coords(event)
+        if event.code == 54:
+            stdsrc.addstr(math.floor(mapFromTo(y,0,804,0,height-1)),math.floor(mapFromTo(x,0,1224,0,width-1)),"*")
+            stdsrc.refresh()
+
+wrapper(main)
+
