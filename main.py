@@ -74,13 +74,26 @@ def draw(mat):
 def main(stdscr):
 
     stdscr.clear()
+    stdscr.nodelay(1)
+    char = '*' 
+
+
     for event in device.read_loop():
+        
         rows, cols = stdscr.getmaxyx()
         get_xy_coords(event)
+        try:
+            char = stdscr.getkey();
+            if char== 'q':
+                break
+            elif char=='c':
+                stdscr.clear()
+        except:
+            pass
 
         if event.code == 54:
             # stdscr.addstr(math.floor(mapFromTo(y,0,804,0,height-1)),math.floor(mapFromTo(x,0,1224,0,width-1)),"*")
-            stdscr.addstr(math.floor(mapFromTo(y,0,804,0,rows-1)),math.floor(mapFromTo(x,0,1224,0,cols-1)),"*")
+            stdscr.addstr(math.floor(mapFromTo(y,0,804,0,rows-1)),math.floor(mapFromTo(x,0,1224,0,cols-1)),char)
             stdscr.refresh()
 
 wrapper(main)
