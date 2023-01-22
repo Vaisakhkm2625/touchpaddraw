@@ -44,7 +44,7 @@ def get_xy_coords(e):
     if e.code == 54:
         global y
         y = e.value
-        
+
 def mapFromTo(x,a,b,c,d):
    # y=(x-a)//(b-a)*(d-c)+c
    y=(x-a)/(b-a)*(d-c)+c
