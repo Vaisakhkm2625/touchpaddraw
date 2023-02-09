@@ -36,7 +36,7 @@ height =  60
 x = 0
 y = 0
 
-mat = [ [' ']*width for i in range(height)]
+# mat = [ [' ']*width for i in range(height)]
 
 def get_xy_coords(e):
     #you may need to change this number here; i don't know
@@ -54,13 +54,13 @@ def mapFromTo(x,a,b,c,d):
    return y
 
 
-def draw(mat):
-    os.system('clear')
-    for i in mat:
-        for j in i:
-            print(j, end='')
-        print()
-    # time.sleep(20)
+# def draw(mat):
+#     os.system('clear')
+#     for i in mat:
+#         for j in i:
+#             print(j, end='')
+#         print()
+#     # time.sleep(20)
 
 
 # for event in device.read_loop():
