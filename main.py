@@ -5,13 +5,13 @@ import math
 import os
 import time
 
-import curses
-from curses import wrapper
-
+#get trackpad absolute coords
 from evdev import InputDevice
  
 import argparse
  
+from pynput import mouse
+from pynput.mouse import Button
  
 # Initialize parser
 parser = argparse.ArgumentParser()
@@ -23,20 +23,16 @@ parser.add_argument("-d", "--device", help = "device (event*)")
 args = parser.parse_args()
 
 #SET THIS TO YOUR DEVICE
-if args.device:
-    device = InputDevice('/dev/input/event6')
-
 device = InputDevice('/dev/input/'+ args.device if args.device else 'event7')
 
-# width =  80
-# height =  30
+touchpad_x_max = 1224
+touchpad_y_max = 804
 
-width =  160
-height =  60
+max_x = 1920
+max_y = 1080
+
 x = 0
 y = 0
-
-# mat = [ [' ']*width for i in range(height)]
 
 def get_xy_coords(e):
     #you may need to change this number here; i don't know
@@ -53,48 +49,23 @@ def mapFromTo(x,a,b,c,d):
    y=(x-a)/(b-a)*(d-c)+c
    return y
 
+x_pos =0
+y_pos =0
 
-# def draw(mat):
-#     os.system('clear')
-#     for i in mat:
-#         for j in i:
-#             print(j, end='')
-#         print()
-#     # time.sleep(20)
+mouse_controller = mouse.Controller()
+for event in device.read_loop():
+    #rows, cols = stdscr.getmaxyx()
+    get_xy_coords(event)
+    if event.code == 54:
+        prev_x_pos = x_pos 
+        prev_y_pos = y_pos 
+        x_pos =math.floor(mapFromTo(x,0,touchpad_x_max,0,max_x))
+        y_pos =math.floor(mapFromTo(y,0,touchpad_y_max,0,max_y))
+        if (abs(prev_x_pos-x_pos)>15 or abs(prev_y_pos-y_pos)>15):
+            mouse_controller.release(Button.left)
+            mouse_controller.position = (x_pos,y_pos);
+        mouse_controller.press(Button.left)
+        mouse_controller.position = (x_pos,y_pos);
 
-
-# for event in device.read_loop():
-#     get_xy_coords(event)
-
-#     if event.code == 54:
-#         mat[math.floor(mapFromTo(y,0,804,0,height-1))][math.floor(mapFromTo(x,0,1224,0,width-1))] = '#'
-#         # mat[mapFromTo(y,0,804,0,height-1)][mapFromTo(x,0,1224,0,width-1)] = '#'
-#         draw(mat)
-
-def main(stdscr):
-
-    stdscr.clear()
-    stdscr.nodelay(1)
-    char = '*' 
-
-
-    for event in device.read_loop():
-        
-        rows, cols = stdscr.getmaxyx()
-        get_xy_coords(event)
-        try:
-            char = stdscr.getkey();
-            if char== 'q':
-                break
-            elif char=='c':
-                stdscr.clear()
-        except:
-            pass
-
-        if event.code == 54:
-            # stdscr.addstr(math.floor(mapFromTo(y,0,804,0,height-1)),math.floor(mapFromTo(x,0,1224,0,width-1)),"*")
-            stdscr.addstr(math.floor(mapFromTo(y,0,804,0,rows-1)),math.floor(mapFromTo(x,0,1224,0,cols-1)),char)
-            stdscr.refresh()
-
-wrapper(main)
+      #stdscr.addstr(math.floor(mapFromTo(y,0,touchpad_y_max,0,max_y)),math.floor(mapFromTo(x,0,touchpad_x_max,0,max_x)),char)
 
