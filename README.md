@@ -2,6 +2,10 @@
 
 This is a simple python script that converts touchpad to graphics tablet...
 
+> (:warning: Still this is in /prototype/ phase and still require *root* privilages... use this *AT YOUR OWN RISK*...  i am not getting time to work on this (need to rewrite this in rust or c)... )
+
+> (:warning: NO support for wayland(yet) )
+
 ## Demo
 
 [![demo yt video for touchpad draw](https://img.youtube.com/vi/jfI_lGY1dHM/0.jpg)](https://www.youtube.com/watch?v=jfI_lGY1dHM)
@@ -31,6 +35,9 @@ install python packages
 sudo pip install evdev 
 sudo pip install pynput
 ```
+(if you are not able to install, see: https://github.com/gvalkov/python-evdev/issues/164)
+
+
 TODO: (libevdev or evdev)
 
 then run
@@ -40,3 +47,6 @@ sudo python main.py -d event8
 
 ```
 accouding to your event number
+
+
+
