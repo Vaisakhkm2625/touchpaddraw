@@ -2,9 +2,8 @@
 
 This is a simple python script that converts touchpad to graphics tablet...
 
-> (:warning: Still this is in /prototype/ phase and still require *root* privilages... use this *AT YOUR OWN RISK*...  i am not getting time to work on this (need to rewrite this in rust or c)... )
-
-> (:warning: NO support for wayland(yet) )
+> :warning: Still this is in /prototype/ phase and still require *root* privilages... use this *AT YOUR OWN RISK*...  i am not getting time to work on this (need to rewrite this in rust or c)... 
+> :warning: NO support for wayland(yet)
 
 ## Demo
 
