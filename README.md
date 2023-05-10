@@ -6,7 +6,6 @@ This is a simple python script that converts touchpad to graphics tablet...
 
 [![demo yt video for touchpad draw](https://img.youtube.com/vi/jfI_lGY1dHM/0.jpg)](https://www.youtube.com/watch?v=jfI_lGY1dHM)
 
-
 ## how to use
 
 clone this repo
