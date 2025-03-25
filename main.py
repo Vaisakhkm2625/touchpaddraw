@@ -1,6 +1,7 @@
 from evdev import InputDevice
 import argparse
 import os
+import time
 import threading
 
 parser = argparse.ArgumentParser()
@@ -29,12 +30,13 @@ threading.Thread(
     daemon = True
 ).start()
 
-def send_mouse(prev_x, prev_y, x, y):
+def send_move(prev_x, prev_y, x, y):
     os.system(f"echo \"mouseto {x} {y}\" | dotoolc".encode())
+    os.system(b"echo \"buttondown left\" | dotoolc")
 
-def send_thread_mouse(*args):
+def send_thread_move(*args):
     threading.Thread(
-        target = send_mouse,
+        target = send_move,
         args = args,
         daemon = True
     ).start()
@@ -42,10 +44,12 @@ def send_thread_mouse(*args):
 for event in device.read_loop():
     if event.code == 53:
         tx = event.value
-    if event.code == 54:
+    elif event.code == 54:
         ty = event.value
 
         sx = tx/max_tx
         sy = ty/max_ty
     
-        send_thread_mouse(prev_sx, prev_sy, sx, sy)
+        send_thread_move(prev_sx, prev_sy, sx, sy)
+    else:
+        print(event.code, event.value)
