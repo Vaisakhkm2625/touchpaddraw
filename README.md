@@ -29,4 +29,13 @@ then run:
 ./start.sh
 ```
 
-or run b
+also, there is a "toggle-script":
+```bash
+./toggle.sh
+```
+it kills or spawns `./start.sh`
+
+my sway config uses it like this:
+```
+bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh"
+```
