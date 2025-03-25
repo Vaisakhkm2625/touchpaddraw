@@ -4,6 +4,7 @@ import os
 import threading
 import subprocess
 import time
+import math
 
 
 def find_device(name):
@@ -16,7 +17,6 @@ def find_device(name):
 
 
 def start_thread(func, *args):
-    # func(*args)
     threading.Thread(
         target = func,
         args = args,
@@ -25,12 +25,9 @@ def start_thread(func, *args):
 
 
 def send_actions(actions):
-    # os.system(b"echo \""+ (b"\n".join(actions)) +b"\" | dotoolc")
-    for x in actions:
-        os.system(b"echo \"" + x + b"\" | dotoolc")
-        time.sleep(1 / 60)
+    os.system(b"echo \""+ (b"\n".join(actions)) +b"\" | dotoolc")
 
-def get_move(prev_x, prev_y, x, y):
+def get_move(x, y):
     return f"mouseto {x} {y}".encode()
 
 def get_button_down():
@@ -63,9 +60,9 @@ def main():
     tx = None
     ty = None
 
-    prev_sx = None
-    prev_sy = None
-    last_cl = None
+    prev_x = None
+    prev_y = None
+    last_time = None
 
     for event in device.read_loop():
         if event.code == 53:
@@ -73,31 +70,24 @@ def main():
         elif event.code == 54:
             ty = event.value
 
-            sx = tx/max_tx
-            sy = ty/max_ty
+            x = tx / max_tx
+            y = ty / max_ty
 
-            press = prev_sx is None
-
-            actions = []
+            actions = [get_button_down(), get_move(x, y), get_button_up()]
 
             now = time.time()
 
-            if prev_sx is not None and prev_sy is not None and last_cl is not None:
-                if ((abs(sx - prev_sx) * max_tx) * (abs(sy - prev_sy) * max_ty) > 20 * 20 or \
-                        now - last_cl > 0.5) and now - last_cl > 0.1:
-                    actions.append(get_button_up())
-                    press = True
-    
-            actions.append(get_move(prev_sx, prev_sy, sx, sy))
+            if last_time is not None:
+                distance = math.sqrt(abs(x - prev_x) * max_tx + abs(y - prev_y) * max_ty)
 
-            if press:
-                actions.append(get_button_down())
-
+                if distance > 15 and now - last_time > 0.1 or now - last_time > 0.5:
+                    actions = [actions[1]]
+                
             start_thread(send_actions, actions)
 
-            prev_sx = sx
-            prev_sy = sy
-            last_cl = now
+            prev_x = x
+            prev_y = y
+            last_time = now
 
 
 if __name__ == "__main__":
