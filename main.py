@@ -51,14 +51,14 @@ def main():
 
     device_path = '/dev/input/' + (find_device(args.device) or "event7")
 
-    max_tx = args.touchpad_width or 1744
-    max_ty = args.touchpad_height or 1266
+    max_tx = int(args.touchpad_width) or 1744
+    max_ty = int(args.touchpad_height) or 1266
 
 
     device = InputDevice(device_path)
     device.grab()
 
-    start_thread(lambda: os.system("dotoold"))
+    start_thread(lambda: os.system("dotoold") and exit())
 
     tx = None
     ty = None
