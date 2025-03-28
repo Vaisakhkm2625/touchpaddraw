@@ -13,29 +13,27 @@ clone this repo
 git clone https://github.com/MeexReay/touchpaddraw.git
 ```
 
-install these packages:
+Install these dependencies:
 - `python3`
 - `libevdev`
 - `python3-evdev`
 - `dotool`
 
-run setup script:
 ```bash
-python setup.py
+python main.py
 ```
 
-then run:
-```bash
-./start.sh
-```
+In case auto-selection of devices is not working,
+you can use `-i` for interactive devices selection menu
+
 
 also, there is a "toggle-script":
 ```bash
 ./toggle.sh
 ```
-it kills or spawns `./start.sh`
 
-my sway config uses it like this:
+@MeexReay's sway config uses it like this:
 ```
 bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh"
+
 ```
