@@ -5,6 +5,7 @@ import threading
 import subprocess
 import time
 import math
+from dotoolc import send_actions
 
 
 def list_devices(devices: list[evdev.InputDevice]):
@@ -33,7 +34,6 @@ def device_menu():
     except ValueError as e:
         print(f" Wrong input, kindly enter a number between 0 and {len(devices)}")
         return None
-
 
 
 def find_device(name:str|None ="touchpad"):
@@ -74,8 +74,8 @@ def start_thread(func, *args):
     ).start()
 
 
-def send_actions(actions):
-    os.system(b"echo \""+ (b"\n".join(actions)) +b"\" | dotoolc")
+#def send_actions(actions):
+#    os.system(b"echo \""+ (b"\n".join(actions)) +b"\" | dotoolc")
 
 def get_move(x, y):
     return f"mouseto {x} {y}".encode()
