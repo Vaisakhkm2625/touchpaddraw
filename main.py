@@ -120,14 +120,15 @@ def main():
 
     max_touchpad_x = int(args.touchpad_width) if args.touchpad_width else device.absinfo(evdev.ecodes.ABS_X).max
     max_touchpad_y = int(args.touchpad_height) if args.touchpad_height else device.absinfo(evdev.ecodes.ABS_Y).max
+    print(f"touchpad dimention : {max_touchpad_x=} {max_touchpad_y=}")
 
     start_thread(lambda: os.system("dotoold") and exit())
 
     touchpad_x = None
     touchpad_y = None
 
-    prev_touchpad_x = None
-    prev_touchpad_y = None
+    prev_x = None
+    prev_y = None
     last_time = None
 
     for event in device.read_loop():
@@ -144,15 +145,19 @@ def main():
             now = time.time()
 
             if last_time is not None:
-                distance = math.sqrt(abs(x - prev_touchpad_x) * max_touchpad_x + abs(y - prev_touchpad_y) * max_touchpad_y)
+                #distance = math.sqrt(abs(x - prev_x) * max_touchpad_x + abs(y - prev_y) * max_touchpad_y)
+                #print(f"{distance}=math.sqrt(abs({x} - {prev_x}) * {max_touchpad_x} + abs({y} - {prev_y}) * {max_touchpad_y})")
 
-                if distance > 15 and now - last_time > 0.1 or now - last_time > 0.5:
+                distance = abs(x - prev_x)+ abs(y - prev_y) 
+
+                if distance > 0.001  and now - last_time > 0.1 or now - last_time > 0.5:
+                #if distance > 0.001:
                     actions = [actions[1]]
                 
             start_thread(send_actions, actions)
 
-            prev_touchpad_x = x
-            prev_touchpad_y = y
+            prev_x = x
+            prev_y = y
             last_time = now
 
 
