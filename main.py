@@ -1,11 +1,37 @@
-import evdev 
 import argparse
 import os
 import threading
-import subprocess
 import time
-import math
 from dotoolc import send_actions
+
+try:
+    import evdev
+except ImportError:
+    print("python-evdev is not installed. Please install it with: pip install evdev")
+    exit(1)
+
+try:
+    import ctypes
+    ctypes.CDLL("libevdev.so.2")
+except OSError:
+    print("libevdev is not found: install libevdev (ignore in cases of nixos)")
+    #exit(1)
+
+
+import shutil
+if not shutil.which("dotool") :
+    print("dotool is not found: install dotool")
+    exit(1)
+
+
+def check_dotool():
+    import shutil
+    return shutil.which("dotool") is not None
+
+import evdev 
+
+
+
 
 
 def list_devices(devices: list[evdev.InputDevice]):
@@ -101,6 +127,8 @@ def main():
     #device = evdev.InputDevice(device_path)
 
 
+    signal.signal(signal.SIGINT, lambda sig, frame: exit(1))
+    signal.signal(signal.SIGTERM, signal_handler)
     device = find_device(args.device)
 
     if(args.interative):
@@ -131,7 +159,15 @@ def main():
     prev_y = None
     last_time = None
 
+
     for event in device.read_loop():
+
+        global running
+
+        if not running:
+            break
+
+
         if event.code == 53:
             touchpad_x = event.value
         elif event.code == 54:
@@ -160,6 +196,7 @@ def main():
             prev_x = x
             prev_y = y
             last_time = now
+
 
 
 if __name__ == "__main__":
