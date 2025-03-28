@@ -150,11 +150,12 @@ def main():
 
                 distance = abs(x - prev_x)+ abs(y - prev_y) 
 
-                if distance > 0.001  and now - last_time > 0.1 or now - last_time > 0.5:
+                if distance > 0.001  and now - last_time > 0.1 or now - last_time > 0.3:
                 #if distance > 0.001:
                     actions = [actions[1]]
                 
-            start_thread(send_actions, actions)
+            #start_thread(send_actions, actions)
+            send_actions(actions)
 
             prev_x = x
             prev_y = y
