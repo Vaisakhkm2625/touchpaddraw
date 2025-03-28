@@ -9,6 +9,7 @@ if [ -f .tpd-pid ]; then
 
     rm .tpd-pid
 else
-    ./start.sh &
+    #./start.sh &
+    python main.py
     echo $! > .tpd-pid
 fi

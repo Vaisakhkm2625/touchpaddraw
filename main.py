@@ -3,6 +3,7 @@ import os
 import threading
 import time
 from dotoolc import send_actions
+import signal
 
 try:
     import evdev
@@ -32,6 +33,13 @@ import evdev
 
 
 
+
+running = True
+
+def signal_handler(sig, frame):
+    global running
+    print("Exiting gracefully...")
+    running = False
 
 
 def list_devices(devices: list[evdev.InputDevice]):
@@ -92,6 +100,10 @@ def is_touchpad(device):
 
 
 
+
+
+
+
 def start_thread(func, *args):
     threading.Thread(
         target = func,
@@ -129,6 +141,8 @@ def main():
 
     signal.signal(signal.SIGINT, lambda sig, frame: exit(1))
     signal.signal(signal.SIGTERM, signal_handler)
+
+
     device = find_device(args.device)
 
     if(args.interative):
