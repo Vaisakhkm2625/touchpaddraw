@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -f .tpd-pid ]; then
     PID=$(cat .tpd-pid)
