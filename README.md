@@ -1,6 +1,9 @@
 # Touchpaddraw
 
-This is a simple python script that converts touchpad to graphics tablet
+This is a simple python script that converts touchpad to graphics tablet...
+
+> :warning: Still this is in /prototype/ phase and still require *root* privilages... use this *AT YOUR OWN RISK*...  i am not getting time to work on this (need to rewrite this in rust or c)... 
+> :warning: NO support for wayland(yet)
 
 ## Demo
 
@@ -10,32 +13,39 @@ This is a simple python script that converts touchpad to graphics tablet
 
 clone this repo
 ```
-git clone https://github.com/MeexReay/touchpaddraw.git
+git clone https://github.com/Vaisakhkm2625/touchpaddraw.git
+```
+or
+```
+git clone git@github.com:Vaisakhkm2625/touchpaddraw.git
 ```
 
-install these packages:
-- `python3`
-- `libevdev`
-- `python3-evdev`
-- `dotool`
+install `evtest`
 
-run setup script:
+Run `sudo evtest` and find the event of your touchpad
+
+```
+/dev/input/event8:	MSFT0001:01 06CB:CE2D Touchpad
+```
+means you have `event8`
+
+install python packages
+```
+sudo pip install evdev 
+sudo pip install pynput
+```
+(if you are not able to install, see: https://github.com/gvalkov/python-evdev/issues/164)
+
+
+TODO: (libevdev or evdev)
+
+then run
+
 ```bash
-python setup.py
-```
+sudo python main.py -d event8
 
-then run:
-```bash
-./start.sh
 ```
+accouding to your event number
 
-also, there is a "toggle-script":
-```bash
-./toggle.sh
-```
-it kills or spawns `./start.sh`
 
-my sway config uses it like this:
-```
-bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh"
-```
+

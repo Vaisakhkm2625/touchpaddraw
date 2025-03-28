@@ -1,94 +1,71 @@
-from evdev import InputDevice
-import argparse
-import os
-import threading
-import subprocess
-import time
+# ref: https://askubuntu.com/questions/1345561/how-can-i-get-absolute-touchpad-coordinates
+#1224 804 -> 20 15
+
 import math
+import os
+import time
 
-
-def find_device(name):
-    for f in os.listdir("/dev/input"):
-        if f.startswith("event"):
-            output = subprocess.check_output(["udevadm", "info", "-a", "/dev/input/"+f])
-            if "ATTRS{name}==\""+name+"\"" in output.decode():
-                return f
-    return None
-
-
-def start_thread(func, *args):
-    threading.Thread(
-        target = func,
-        args = args,
-        daemon = True
-    ).start()
-
-
-def send_actions(actions):
-    os.system(b"echo \""+ (b"\n".join(actions)) +b"\" | dotoolc")
-
-def get_move(x, y):
-    return f"mouseto {x} {y}".encode()
-
-def get_button_down():
-    return b"buttondown left"
-
-def get_button_up():
-    return b"buttonup left"
-
-
-def main():
-    parser = argparse.ArgumentParser()
+#get trackpad absolute coords
+from evdev import InputDevice
  
-    parser.add_argument("-d", "--device")
-    parser.add_argument("-W", "--touchpad-width")
-    parser.add_argument("-H", "--touchpad-height")
+import argparse
+ 
+from pynput import mouse
+from pynput.mouse import Button
+ 
+# Initialize parser
+parser = argparse.ArgumentParser()
+ 
+# Adding optional argument
+parser.add_argument("-d", "--device", help = "device (event*)")
+ 
+# Read arguments from command line
+args = parser.parse_args()
 
-    args = parser.parse_args()
+#SET THIS TO YOUR DEVICE
+device = InputDevice('/dev/input/'+ args.device if args.device else 'event7')
 
-    device_path = '/dev/input/' + (find_device(args.device) or "event7")
+touchpad_x_max = 1224
+touchpad_y_max = 804
 
-    max_tx = int(args.touchpad_width) or 1744
-    max_ty = int(args.touchpad_height) or 1266
+max_x = 1920
+max_y = 1080
 
+x = 0
+y = 0
 
-    device = InputDevice(device_path)
-    device.grab()
+def get_xy_coords(e):
+    #you may need to change this number here; i don't know
+    if e.code == 53:
+        global x
+        x = e.value
+    #this one too
+    if e.code == 54:
+        global y
+        y = e.value
+        
+def mapFromTo(x,a,b,c,d):
+   # y=(x-a)//(b-a)*(d-c)+c
+   y=(x-a)/(b-a)*(d-c)+c
+   return y
 
-    start_thread(lambda: os.system("dotoold") and exit())
+x_pos =0
+y_pos =0
 
-    tx = None
-    ty = None
+mouse_controller = mouse.Controller()
+for event in device.read_loop():
+    #rows, cols = stdscr.getmaxyx()
+    get_xy_coords(event)
+    if event.code == 54:
+        prev_x_pos = x_pos 
+        prev_y_pos = y_pos 
+        x_pos =math.floor(mapFromTo(x,0,touchpad_x_max,0,max_x))
+        y_pos =math.floor(mapFromTo(y,0,touchpad_y_max,0,max_y))
+        if (abs(prev_x_pos-x_pos)>15 or abs(prev_y_pos-y_pos)>15):
+            mouse_controller.release(Button.left)
+            mouse_controller.position = (x_pos,y_pos);
+        mouse_controller.press(Button.left)
+        mouse_controller.position = (x_pos,y_pos);
 
-    prev_x = None
-    prev_y = None
-    last_time = None
+      #stdscr.addstr(math.floor(mapFromTo(y,0,touchpad_y_max,0,max_y)),math.floor(mapFromTo(x,0,touchpad_x_max,0,max_x)),char)
 
-    for event in device.read_loop():
-        if event.code == 53:
-            tx = event.value
-        elif event.code == 54:
-            ty = event.value
-
-            x = tx / max_tx
-            y = ty / max_ty
-
-            actions = [get_button_down(), get_move(x, y), get_button_up()]
-
-            now = time.time()
-
-            if last_time is not None:
-                distance = math.sqrt(abs(x - prev_x) * max_tx + abs(y - prev_y) * max_ty)
-
-                if distance > 15 and now - last_time > 0.1 or now - last_time > 0.5:
-                    actions = [actions[1]]
-                
-            start_thread(send_actions, actions)
-
-            prev_x = x
-            prev_y = y
-            last_time = now
-
-
-if __name__ == "__main__":
-    main()
