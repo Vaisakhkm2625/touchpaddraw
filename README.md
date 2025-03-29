@@ -10,7 +10,7 @@ This is a simple python script that converts touchpad to graphics tablet
 
 clone this repo
 ```
-git clone https://github.com/MeexReay/touchpaddraw.git
+git clone https://github.com/Vaisakhkm2625/touchpaddraw.git
 ```
 
 Install these dependencies:
@@ -29,11 +29,11 @@ you can use `-i` for interactive devices selection menu
 
 also, there is a "toggle-script":
 ```bash
-./toggle.sh
+./toggle.sh <device>
 ```
 
 @MeexReay's sway config uses it like this:
 ```
-bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh"
+bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh touchpad"
 
 ```

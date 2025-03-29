@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ $# -eq 0 ]; then
+    echo "Usage: ./toggle.sh <device>"
+    exit 1
+fi
+
 if [ -f .tpd-pid ]; then
     PID=$(cat .tpd-pid)
 
@@ -9,7 +14,6 @@ if [ -f .tpd-pid ]; then
 
     rm .tpd-pid
 else
-    #./start.sh &
-    python main.py
+    python main.py -d "$1" &
     echo $! > .tpd-pid
 fi
