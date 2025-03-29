@@ -10,7 +10,7 @@ This is a simple python script that converts touchpad to graphics tablet
 
 clone this repo
 ```
-git clone https://github.com/MeexReay/touchpaddraw.git
+git clone https://github.com/Vaisakhkm2625/touchpaddraw.git
 ```
 
 Install these dependencies:
