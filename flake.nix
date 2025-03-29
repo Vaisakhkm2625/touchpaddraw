@@ -1,18 +1,38 @@
 {
-  description = "Nix shell with Python and evdev";
+  description = "Nix flake with Python and evdev, runnable via nix run";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs";
 
-  outputs = { nixpkgs, ... }: 
+  outputs = { self, nixpkgs, ... }:
   let
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
   in {
-    devShells.x86_64-linux.default = pkgs.mkShell {
+    devShells.${system}.default = pkgs.mkShell {
       buildInputs = [
         pkgs.python3
         pkgs.python3Packages.evdev
         pkgs.dotool
       ];
+    };
+
+    packages.${system}.default = pkgs.python3Packages.buildPythonPackage {
+      pname = "touchpaddraw";
+      version = "0.1.0";
+      src = ./.;
+      format = "other";
+      propagatedBuildInputs = [ pkgs.python3Packages.evdev ];
+      installPhase = ''
+        mkdir -p $out/bin
+        cp main.py $out/bin/main.py
+        cp dotoolc.py $out/bin/dotoolc.py
+        chmod +x $out/bin/main.py
+      '';
+    };
+
+    apps.${system}.default = {
+      type = "app";
+      program = "${self.packages.${system}.default}/bin/main.py";
     };
   };
 }
