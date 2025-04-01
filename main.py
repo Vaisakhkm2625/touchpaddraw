@@ -46,7 +46,7 @@ def signal_handler(sig, frame):
 
 
 def list_devices(devices: list[evdev.InputDevice]):
-    print("\n".join([f"{i}.{dev.name}" for i,dev in enumerate(devices)]))
+    print("\n".join([f"({dev.path}) \t {i}.{dev.name}" for i,dev in enumerate(devices)]))
 
 
 def device_menu():
