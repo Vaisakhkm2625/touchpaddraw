@@ -42,6 +42,7 @@ def signal_handler(sig, frame):
     global running
     print("Exiting gracefully...")
     running = False
+    device.ungrab()
 
 
 def list_devices(devices: list[evdev.InputDevice]):
