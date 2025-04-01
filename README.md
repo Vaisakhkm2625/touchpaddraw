@@ -37,3 +37,11 @@ also, there is a "toggle-script":
 bindsym $mod+Shift+g exec bash -c "cd $HOME/touchpaddraw && ./toggle.sh touchpad"
 
 ```
+
+## NixOS
+
+
+```
+nix run github:Vaisakhkm2625/touchpaddraw
+```
+
