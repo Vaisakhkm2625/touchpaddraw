@@ -21,7 +21,10 @@
       version = "0.1.0";
       src = ./.;
       format = "other";
-      propagatedBuildInputs = [ pkgs.python3Packages.evdev ];
+      propagatedBuildInputs = [
+        pkgs.python3Packages.evdev
+        pkgs.dotool
+      ];
       installPhase = ''
         mkdir -p $out/bin
         cp main.py $out/bin/main.py
